@@ -24,6 +24,17 @@ Benchmarks show that this setting will significantly improve performance, but be
 You can read more about this in the decision record at `adr/2023-04-libxml-memory-management.md`.
 
 
+### Dependencies
+
+* [CRuby] Vendored libxml2 is updated to v2.11.3 from v2.10.4. For details please see:
+  * https://gitlab.gnome.org/GNOME/libxml2/-/releases/v2.11.0
+  * https://gitlab.gnome.org/GNOME/libxml2/-/releases/v2.11.1
+  * https://gitlab.gnome.org/GNOME/libxml2/-/releases/v2.11.2
+  * https://gitlab.gnome.org/GNOME/libxml2/-/releases/v2.11.3
+* [CRuby] Vendored libxslt is updated to v1.1.38 from v1.1.37. For details please see:
+  * https://gitlab.gnome.org/GNOME/libxslt/-/releases/v1.1.38
+
+
 ### Added
 
 * `Encoding` objects may now be passed to serialization methods like `#to_xml`, `#to_html`, `#serialize`, and `#write_to` to specify the output encoding. Previously only encoding names (strings) were accepted. [[#2774](https://github.com/sparklemotion/nokogiri/issues/2774), [#2798](https://github.com/sparklemotion/nokogiri/issues/2798)] (Thanks, [@ellaklara](https://github.com/ellaklara)!)
@@ -46,9 +57,11 @@ You can read more about this in the decision record at `adr/2023-04-libxml-memor
 * [CRuby] The C extension now uses Ruby's [TypedData API](https://docs.ruby-lang.org/en/3.0/extension_rdoc.html#label-Encapsulate+C+Data+into+a+Ruby+Object) for managing all the libxml2 structs. Write barriers may improve GC performance in some extreme cases. [[#2808](https://github.com/sparklemotion/nokogiri/issues/2808)] (Thanks, [@etiennebarrie](https://github.com/etiennebarrie) and [@byroot](https://github.com/byroot)!)
 * [CRuby] `ObjectSpace.memsize_of` reports a pretty good guess of memory usage when called on `Nokogiri::XML::Document` objects. [[#2807](https://github.com/sparklemotion/nokogiri/issues/2807)] (Thanks, [@etiennebarrie](https://github.com/etiennebarrie) and [@byroot](https://github.com/byroot)!)
 * [CRuby] Users installing the "ruby" platform gem and compiling libxml2 and libxslt from source will now be using a modern `config.guess` and `config.sub` that supports new architectures like `loongarch64`. [[#2831](https://github.com/sparklemotion/nokogiri/issues/2831)] (Thanks, [@zhangwenlong8911](https://github.com/zhangwenlong8911)!)
-* [CRuby] HTML5 parser now adjusts the specified attributes, adding `xlink:arcrole` and removing `xml:base` [[#2841](https://github.com/sparklemotion/nokogiri/issues/2841), [#2842](https://github.com/sparklemotion/nokogiri/issues/2842)]
 * [JRuby] `Node#first_element_child` now returns `nil` if there are only non-element children. [[#2808](https://github.com/sparklemotion/nokogiri/issues/2808), [#2844](https://github.com/sparklemotion/nokogiri/issues/2844)]
 * Documentation for `Nokogiri::XSLT` now has usage examples including custom function handlers.
+* [CRuby] HTML5 parser:
+  * adjusts the specified attributes, adding `xlink:arcrole` and removing `xml:base` [[#2841](https://github.com/sparklemotion/nokogiri/issues/2841), [#2842](https://github.com/sparklemotion/nokogiri/issues/2842)]
+  * allows `<hr>` in `<select>` [[whatwg/html#3410](https://github.com/whatwg/html/issues/3410), [whatwg/html#9124](https://github.com/whatwg/html/pull/9124)]
 
 
 ### Deprecated
@@ -56,11 +69,23 @@ You can read more about this in the decision record at `adr/2023-04-libxml-memor
 * Passing a `Nokogiri::XML::Node` as the first parameter to `CDATA.new` is deprecated and will generate a warning. This parameter should be a kind of `Nokogiri::XML::Document`. This will become an error in a future version of Nokogiri.
 * Passing a `Nokogiri::XML::Node` as the first parameter to `Schema.from_document` is deprecated and will generate a warning. This parameter should be a kind of `Nokogiri::XML::Document`. This will become an error in a future version of Nokogiri.
 * Passing a `Nokogiri::XML::Node` as the second parameter to `Text.new` is deprecated and will generate a warning. This parameter should be a kind of `Nokogiri::XML::Document`. This will become an error in a future version of Nokogiri.
+* [CRuby] Calling a custom XPath function without the `nokogiri` namespace is deprecated and will generate a warning. Support for non-namespaced functions will be removed in a future version of Nokogiri. (Note that JRuby has never supported non-namespaced custom XPath functions.)
 
 
 ### Performance
 
 ### Security
+
+
+## 1.14.4 / 2023-05-11
+
+### Dependencies
+
+* [JRuby] Vendored Xalan-J is updated to [v2.7.3](https://xalan.apache.org/xalan-j/readme.html). This is the first Xalan release in nine years, and it was done to address [CVE-2022-34169](https://github.com/advisories/GHSA-9339-86wc-4qgf).
+
+  The Nokogiri maintainers wish to stress that Nokogiri users were not vulnerable to this CVE, as we explained in [GHSA-qwq9-89rg-ww72](https://github.com/sparklemotion/nokogiri/security/advisories/GHSA-qwq9-89rg-ww72), and so upgrading is really at the discretion of users.
+
+  This release was cut primarily so that JRuby users of v1.14.x can avoid vulnerability scanner alerts on earlier versions of Xalan-J.
 
 
 ## 1.14.3 / 2023-04-11

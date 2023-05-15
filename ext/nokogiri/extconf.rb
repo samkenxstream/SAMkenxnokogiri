@@ -15,7 +15,7 @@ PACKAGE_ROOT_DIR = File.expand_path(File.join(File.dirname(__FILE__), "..", ".."
 REQUIRED_LIBXML_VERSION = "2.6.21"
 RECOMMENDED_LIBXML_VERSION = "2.9.3"
 
-REQUIRED_MINI_PORTILE_VERSION = "~> 2.8.0" # keep this version in sync with the one in the gemspec
+REQUIRED_MINI_PORTILE_VERSION = "~> 2.8.2" # keep this version in sync with the one in the gemspec
 REQUIRED_PKG_CONFIG_VERSION = "~> 1.1"
 
 # Keep track of what versions of what libraries we build against
@@ -229,7 +229,7 @@ def gnome_source
   if ENV["NOKOGIRI_USE_CANONICAL_GNOME_SOURCE"]
     "https://download.gnome.org"
   else
-    "https://mirror.csclub.uwaterloo.ca/gnome" # old reliable
+    "https://muug.ca/mirror/gnome" # old reliable
   end
 end
 
@@ -882,7 +882,12 @@ else
       recipe.patch_files = Dir[File.join(PACKAGE_ROOT_DIR, "patches", "libxml2", "*.patch")].sort
     end
 
+    cppflags = concat_flags(ENV["CPPFLAGS"])
     cflags = concat_flags(ENV["CFLAGS"], "-O2", "-U_FORTIFY_SOURCE", "-g")
+
+    if cross_build_p
+      cppflags = concat_flags(cppflags, "-DNOKOGIRI_PRECOMPILED_LIBRARIES")
+    end
 
     if zlib_recipe
       recipe.configure_options << "--with-zlib=#{zlib_recipe.path}"
@@ -914,6 +919,7 @@ else
       "--with-c14n",
       "--with-debug",
       "--with-threads",
+      "CPPFLAGS=#{cppflags}",
       "CFLAGS=#{cflags}",
     ]
   end

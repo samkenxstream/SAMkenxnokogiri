@@ -334,12 +334,12 @@ Gem::Specification.new do |spec|
     spec.requirements << "jar org.nokogiri, nekodtd, 0.1.11.noko1"
     spec.requirements << "jar net.sourceforge.htmlunit, neko-htmlunit, 2.63.0"
     spec.requirements << "jar nu.validator, jing, 20200702VNU" # https://search.maven.org/artifact/nu.validator/jing
-    spec.requirements << "jar xalan, serializer, 2.7.2" # https://search.maven.org/artifact/xalan/serializer
-    spec.requirements << "jar xalan, xalan, 2.7.2" # https://search.maven.org/artifact/xalan/xalan
+    spec.requirements << "jar xalan, serializer, 2.7.3" # https://search.maven.org/artifact/xalan/serializer
+    spec.requirements << "jar xalan, xalan, 2.7.3" # https://search.maven.org/artifact/xalan/xalan
     spec.requirements << "jar xerces, xercesImpl, 2.12.2" # https://search.maven.org/artifact/xerces/xercesImpl
     spec.requirements << "jar xml-apis, xml-apis, 1.4.01" # https://search.maven.org/artifact/xml-apis/xml-apis
   else
-    spec.add_runtime_dependency("mini_portile2", "~> 2.8.0") # keep version in sync with extconf.rb
+    spec.add_runtime_dependency("mini_portile2", "~> 2.8.2") # keep version in sync with extconf.rb
   end
   spec.add_runtime_dependency("racc", "~> 1.4")
 
